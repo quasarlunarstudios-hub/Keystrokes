@@ -1,0 +1,44 @@
+package com.meumod.keystrokes;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+
+@Mod(modid = "keystrokes", version = "1.0")
+public class Keystrokes {
+
+    @Mod.EventHandler
+    public void init(FMLInitializationEvent event) {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @SubscribeEvent
+    public void onRender(RenderGameOverlayEvent.Post event) {
+        if (event.type == RenderGameOverlayEvent.ElementType.ALL) {
+            renderKeystrokes();
+        }
+    }
+
+    private void renderKeystrokes() {
+        Minecraft mc = Minecraft.getMinecraft();
+        int x = 10;
+        int y = 10;
+        int tamanho = 22;
+        int gap = 2;
+
+        desenharBotao(x + tamanho + gap, y, tamanho, mc.gameSettings.keyBindForward.isKeyDown(), "W");
+        desenharBotao(x, y + tamanho + gap, tamanho, mc.gameSettings.keyBindLeft.isKeyDown(), "A");
+        desenharBotao(x + tamanho + gap, y + tamanho + gap, tamanho, mc.gameSettings.keyBindBack.isKeyDown(), "S");
+        desenharBotao(x + (tamanho + gap) * 2, y + tamanho + gap, tamanho, mc.gameSettings.keyBindRight.isKeyDown(), "D");
+    }
+
+    private void desenharBotao(int x, int y, int size, boolean isPressed, String name) {
+        int color = isPressed ? 0x90FFFFFF : 0x90000000;
+        Gui.drawRect(x, y, x + size, y + size, color);
+        Minecraft.getMinecraft().fontRendererObj.drawString(name, x + (size / 2) - 3, y + (size / 2) - 4, 0xFFFFFFFF);
+    }
+}
